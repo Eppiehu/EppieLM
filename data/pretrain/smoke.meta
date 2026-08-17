@@ -1,0 +1,23 @@
+{
+  "format_version": 1,
+  "dtype": "uint16",
+  "vocab_size": 15000,
+  "eos_token_id": 2,
+  "seq_len": 32,
+  "num_chunks": 3,
+  "shape": [
+    3,
+    32
+  ],
+  "total_tokens_before_truncation": 115,
+  "kept_tokens": 96,
+  "dropped_tokens": 19,
+  "documents": {
+    "input_lines": 5,
+    "processed_documents": 4,
+    "invalid_json": 1,
+    "missing_text": 0,
+    "empty_text": 0,
+    "token_errors": 0
+  }
+}
