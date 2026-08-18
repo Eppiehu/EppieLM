@@ -1,0 +1,118 @@
+========================================================================
+EppieLM-150M-Base Generation Test
+========================================================================
+Device: cuda
+Parameters: 149.97M
+Tokenizer vocab: 15,000
+
+========================================================================
+PROMPT: 中国的首都是
+
+[GREEDY]
+中国的首都是，而这一次，他们又是第一次来这里。
+“你……”
+“你……”
+“你……”
+“你……”
+“你……”
+“你……”
+“你……”
+“你……”
+“你……”
+“你……”
+“
+
+[SAMPLE temperature=0.8 top_k=50]
+中国的首都是中小企业，但从二季度以来，各省市统计信息显示，全国市场新三板市场已从一季度度的5.6亿户增加到815万户，较去年同期增加4.6万户，较去年同期减少626.7万户。
+
+
+========================================================================
+PROMPT: 北京大学是一所
+
+[GREEDY]
+北京大学是一所世界知名的高等院校，也是世界知名的高等院校。
+在国内，大学是国家建设的重点，大学是国家建设的重点，大学是国家建设的重点，大学是国家建设的重点，大学是国家建设的重点，大学是国家建设的重点，大学是国家
+
+[SAMPLE temperature=0.8 top_k=50]
+北京大学是一所全国性的研究型大学，它于1999年10月成立。
+2. 研究生培养目标：
+1. 培养学生具有较强的理论、应用、应用能力和专业素养，具有良好的专业素养，能够独立完成课程、学制、课程、课程及课程设置，掌握与应用
+
+========================================================================
+PROMPT: 人工智能的发展
+
+[GREEDY]
+人工智能的发展，在外人看来，这简直就是“一朝一夕”的事。
+“我就是想着，你现在就要去找我，我就要去找你，你现在就要去找我，我就要去找你，你现在就要去找我，
+
+[SAMPLE temperature=0.8 top_k=50]
+人工智能的发展。他将自己的作品，以自己的方式传递信息，并力发，让更多观众看到。
+此外，他还公开向全社会公开了《百日攻防战》的拍摄过程。为了确保导演，他对拍摄过程的每一个细节都了如指掌。据悉，演员
+
+========================================================================
+PROMPT: The future of artificial intelligence is
+
+[GREEDY]
+The future of artificial intelligence is a big one.
+The future of artificial intelligence is a big one.
+The future of artificial intelligence is a big one.
+The future of artificial intelligence is a big one.
+The
+
+[SAMPLE temperature=0.8 top_k=50]
+The future of artificial intelligence is that it offers the potential to manufacture new solutions to new technology, based on a recent MIT paper published online in the journal Physical Review Letters.
+The re
+
+========================================================================
+PROMPT: Machine learning is
+
+[GREEDY]
+Machine learning is a fast and easy way to learn.
+The machine learning model is a model that is based on the machine learning model. It is a model that is based on the machine learning model. It is a model
+
+[SAMPLE temperature=0.8 top_k=50]
+Machine learning is a valuable tool that enables users to draw patterns and represent the truth, while also reducing the risk of errors.
+This means that users can simplify the execut
+
+========================================================================
+PROMPT: def fibonacci(n):
+
+[GREEDY]
+def fibonacci(n):
+            return n.replace('\\', '\\\\')
+        return '\\'.join(f.replace('\\', '\\\\').replace('\\', '\\\\').replace('\\',
+
+[SAMPLE temperature=0.8 top_k=50]
+def fibonacci(n):
+    f = f(n)
+    f = np.asarray(f, dtype=bool)
+    f.reset_title('f' + f)
+    f.title('f')
+    return f
+
+
+class Settings(Parser):
+    name = '
+
+========================================================================
+PROMPT: import torch
+
+[GREEDY]
+import torch.get_torch_state()
+
+
+def get_torch_state(torch_state):
+    """
+    Returns the torch state for the given torch.
+    """
+    return torch_state.get
+
+[SAMPLE temperature=0.8 top_k=50]
+import torch.run()     # invoke handler
+
+    return torch.run()
+
+
+class TorchHandler(SimpleTorchHandler):
+    def __init__(self, torch, run_return
+

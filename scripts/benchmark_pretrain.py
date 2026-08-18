@@ -101,6 +101,24 @@ def parse_args():
         ],
     )
 
+    parser.add_argument(
+        "--compile",
+        action="store_true",
+        help="Enable torch.compile for the model.",
+    )
+
+    parser.add_argument(
+        "--compile-mode",
+        type=str,
+        default="default",
+        choices=[
+            "default",
+            "reduce-overhead",
+            "max-autotune",
+        ],
+        help="torch.compile mode.",
+    )
+
     return parser.parse_args()
 
 
@@ -378,6 +396,10 @@ def main():
 
     model.train()
 
+    # 保留原始模型引用。
+    # optimizer / gradient clipping / 模型结构统计都使用 raw_model。
+    raw_model = model
+
     gradient_checkpointing = (
         not args.no_gradient_checkpointing
     )
@@ -390,9 +412,26 @@ def main():
         )
 
     optimizer, fused = create_optimizer(
-        model,
+        raw_model,
         args.lr,
     )
+
+    if args.compile:
+        print()
+        print(
+            f"Compiling model "
+            f"(mode={args.compile_mode})..."
+        )
+
+        model = torch.compile(
+            raw_model,
+            mode=args.compile_mode,
+            fullgraph=False,
+            dynamic=False,
+        )
+
+    else:
+        model = raw_model
 
     effective_batch = (
         args.micro_batch_size
@@ -405,13 +444,13 @@ def main():
     )
 
     checkpointed_layers = (
-        model.model.get_checkpointed_layer_count()
+        raw_model.model.get_checkpointed_layer_count()
         if gradient_checkpointing
         else 0
     )
 
     total_layers = len(
-        model.model.layers
+        raw_model.model.layers
     )
 
     print()
@@ -467,12 +506,22 @@ def main():
 
         print(
             "Preserve RNG state: "
-            f"{model.model.checkpoint_preserve_rng_state}"
+            f"{raw_model.model.checkpoint_preserve_rng_state}"
         )
 
     print(
         f"Optimizer fused: {fused}"
     )
+
+    print(
+        f"torch.compile: {args.compile}"
+    )
+
+    if args.compile:
+        print(
+            f"Compile mode: "
+            f"{args.compile_mode}"
+        )
 
     print(
         "Precision: BF16"
@@ -483,8 +532,14 @@ def main():
         f"{args.sdpa_backend}"
     )
 
+    warmup_steps = (
+        max(args.warmup_steps, 10)
+        if args.compile
+        else args.warmup_steps
+    )
+
     total_steps = (
-        args.warmup_steps
+        warmup_steps
         + args.steps
     )
 
@@ -527,7 +582,7 @@ def main():
     print("=" * 72)
 
     print(
-        f"WARMUP {args.warmup_steps} STEPS "
+        f"WARMUP {warmup_steps} STEPS "
         f"+ BENCHMARK {args.steps} STEPS"
     )
 
@@ -540,8 +595,14 @@ def main():
             total_steps
         ):
             is_warmup = (
-                step < args.warmup_steps
+                step < warmup_steps
             )
+
+            # compile 首次编译和 warmup 的显存峰值
+            # 不计入正式 benchmark。
+            if step == warmup_steps:
+                torch.cuda.synchronize()
+                torch.cuda.reset_peak_memory_stats()
 
             torch.cuda.synchronize()
 
@@ -619,7 +680,7 @@ def main():
 
             grad_norm = (
                 torch.nn.utils.clip_grad_norm_(
-                    model.parameters(),
+                    raw_model.parameters(),
                     max_norm=1.0,
                 )
             )

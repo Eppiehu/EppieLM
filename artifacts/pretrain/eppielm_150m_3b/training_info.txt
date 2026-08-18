@@ -1,0 +1,30 @@
+EppieLM-150M-Base
+
+Parameters: 149.97M
+Training tokens: 2,999,992,320
+Sequence length: 2048
+Optimizer steps: 366,210
+
+GPU: NVIDIA GeForce RTX 5090
+Precision: BF16
+SDPA: Flash Attention
+torch.compile: max-autotune
+Micro batch size: 4
+Gradient accumulation: 1
+Tokens per optimizer step: 8,192
+
+Peak VRAM: 7.95 GiB
+Training time: 7.03 hours
+Average throughput: 118,554 tokens/s
+
+Learning rate: 3e-4
+Minimum learning rate: 3e-5
+Warmup steps: 2,000
+Weight decay: 0.1
+Gradient clipping: 1.0
+
+Final checkpoint:
+step_00366210
+
+model.pt SHA256:
+4fa4e25108c42aa99f7e54e6ce249df10bca959a17347dc3728c9843e5e9a9ad

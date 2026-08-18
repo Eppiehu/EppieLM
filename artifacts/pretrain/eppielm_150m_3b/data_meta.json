@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "dataset": "eppielm_3b",
+  "vocab_size": 15000,
+  "eos_token_id": 2,
+  "seq_len": 2048,
+  "num_chunks": 1464842,
+  "total_tokens": 2999996416,
+  "dtype": "uint16",
+  "shape": [
+    1464842,
+    2048
+  ],
+  "tokenizer": "D:\\codefield\\EppieLM\\tokenizer\\eppielm_tokenizer",
+  "mix_seed": 42,
+  "sources": {
+    "en": {
+      "requested_tokens": 1350000000,
+      "tokens": 1349998592,
+      "chunks": 659179,
+      "ratio": 0.4500000682667482
+    },
+    "zh": {
+      "requested_tokens": 1350000000,
+      "tokens": 1349998592,
+      "chunks": 659179,
+      "ratio": 0.4500000682667482
+    },
+    "code": {
+      "requested_tokens": 300000000,
+      "tokens": 299999232,
+      "chunks": 146484,
+      "ratio": 0.09999986346650355
+    }
+  },
+  "raw_root": "E:\\EppieLMData\\raw"
+}

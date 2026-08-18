@@ -745,8 +745,12 @@ def train(args) -> None:
         device
     )
 
+    # raw_model 始终用于 optimizer、checkpoint、grad clipping。
+    # compiled model 只负责 forward/backward。
+    raw_model = model
+
     if args.gradient_checkpointing:
-        model.gradient_checkpointing_enable()
+        raw_model.gradient_checkpointing_enable()
 
         print(
             "Gradient checkpointing: enabled"
@@ -758,7 +762,7 @@ def train(args) -> None:
 
     optimizer, fused_optimizer = (
         build_optimizer(
-            model=model,
+            model=raw_model,
             args=args,
             device=device,
         )
@@ -814,7 +818,7 @@ def train(args) -> None:
                 saved_max_steps,
             ) = load_checkpoint(
                 checkpoint_dir=checkpoint_dir,
-                model=model,
+                model=raw_model,
                 optimizer=optimizer,
                 scaler=scaler,
                 device=device,
@@ -849,6 +853,37 @@ def train(args) -> None:
         )
 
         return
+
+    print(
+        f"torch.compile:          "
+        f"{args.compile}"
+    )
+
+    if args.compile:
+        if device.type != "cuda":
+            raise RuntimeError(
+                "当前训练配置仅在 CUDA 上启用 torch.compile。"
+            )
+
+        print(
+            f"Compile mode:           "
+            f"{args.compile_mode}"
+        )
+
+        print(
+            "Compiling model "
+            "(first forward may take a while)..."
+        )
+
+        model = torch.compile(
+            raw_model,
+            mode=args.compile_mode,
+            fullgraph=False,
+            dynamic=False,
+        )
+
+    else:
+        model = raw_model
 
     model.train()
 
@@ -1009,7 +1044,7 @@ def train(args) -> None:
 
                 grad_norm = (
                     torch.nn.utils.clip_grad_norm_(
-                        model.parameters(),
+                        raw_model.parameters(),
                         args.max_grad_norm,
                     )
                 )
@@ -1178,7 +1213,7 @@ def train(args) -> None:
                     == 0
                 ):
                     save_checkpoint(
-                        model=model,
+                        model=raw_model,
                         optimizer=optimizer,
                         scaler=scaler,
                         args=args,
@@ -1228,7 +1263,7 @@ def train(args) -> None:
     if last_saved_step != global_step:
         final_checkpoint = (
             save_checkpoint(
-                model=model,
+                model=raw_model,
                 optimizer=optimizer,
                 scaler=scaler,
                 args=args,
@@ -1462,6 +1497,24 @@ def parse_args():
             "flash",
         ],
         default="cudnn",
+    )
+
+    parser.add_argument(
+        "--compile",
+        action="store_true",
+        help="Enable torch.compile.",
+    )
+
+    parser.add_argument(
+        "--compile_mode",
+        type=str,
+        choices=[
+            "default",
+            "reduce-overhead",
+            "max-autotune",
+        ],
+        default="default",
+        help="torch.compile mode.",
     )
 
     parser.add_argument(
